@@ -1,0 +1,18 @@
+[user]
+    name = 
+    email = 
+    signingkey = 
+
+[commit]
+    gpgsign = true
+
+[core]
+    autocrlf = input
+
+[alias]
+    lg = log --oneline --graph --decorate
+    co = checkout
+    br = branch
+
+[pull]
+    rebase = false

@@ -23,6 +23,11 @@ sudo apt install -y \
   htop net-tools jq ripgrep bat fzf \
   postgresql-client maven
 
+# ─── yq ────────────────────────────────────────────────────
+echo "Installing yq..."
+sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+sudo chmod +x /usr/local/bin/yq
+
 # ─── Docker ────────────────────────────────────────────────
 echo "Installing Docker..."
 sudo apt install -y docker.io
@@ -52,12 +57,13 @@ DOTFILES_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 ln -sf "$DOTFILES_DIR/scripts/.zshrc" ~/.zshrc
 ln -sf "$DOTFILES_DIR/scripts/.p10k.zsh" ~/.p10k.zsh
+ln -sf "$DOTFILES_DIR/scripts/.gitconfig" ~/.gitconfig
 
 # ─── WSL Config (WSL only) ─────────────────────────────────
 if grep -qi microsoft /proc/version; then
   echo "WSL detected, linking wsl.conf..."
   sudo ln -sf "$DOTFILES_DIR/wsl/wsl.conf" /etc/wsl.conf
-  echo " Don't forget to copy wsl/.wslconfig to C:\Users\YourUser\.wslconfig"
+  echo "Don't forget to copy wsl/.wslconfig to C:\Users\YourUser\.wslconfig"
 else
   echo "Not WSL, skipping wsl.conf..."
 fi
