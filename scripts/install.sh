@@ -3,6 +3,32 @@ set -e
 
 echo "Setting up dotfiles..."
 
+# ─── System Tools ──────────────────────────────────────────
+echo "Installing system tools..."
+sudo apt update -y
+sudo apt install -y \
+  build-essential \
+  curl \
+  wget \
+  git \
+  unzip \
+  zip \
+  htop \
+  net-tools \
+  jq \
+  ripgrep \
+  bat \
+  fzf \
+  postgresql-client \
+  maven
+
+# fallback para bat no Ubuntu (WSL comum)
+if ! command -v bat >/dev/null 2>&1; then
+  if command -v batcat >/dev/null 2>&1; then
+    sudo ln -sf "$(which batcat)" /usr/local/bin/bat
+  fi
+fi
+
 # ─── ZSH Plugins ───────────────────────────────────────────
 mkdir -p ~/.zsh/plugins
 
@@ -15,14 +41,6 @@ mkdir -p ~/.zsh/plugins
 [ -d ~/.zsh/plugins/zsh-syntax-highlighting ] || \
   git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.zsh/plugins/zsh-syntax-highlighting
 
-# ─── System Tools ──────────────────────────────────────────
-echo "Installing system tools..."
-sudo apt update
-sudo apt install -y \
-  build-essential curl wget git unzip zip \
-  htop net-tools jq ripgrep bat fzf \
-  postgresql-client maven
-
 # ─── yq ────────────────────────────────────────────────────
 echo "Installing yq..."
 sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
@@ -33,9 +51,9 @@ echo "Installing Docker..."
 sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 
-if command -v systemctl >/dev/null; then
-  sudo systemctl enable docker
-  sudo systemctl start docker
+if command -v systemctl >/dev/null 2>&1; then
+  sudo systemctl enable docker || true
+  sudo systemctl start docker || true
 fi
 
 # ─── SDKMAN + Java ─────────────────────────────────────────
