@@ -12,9 +12,12 @@ sdk update
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
-source "$NVM_DIR/nvm.sh"
-nvm install --lts
-nvm alias default lts/*
+
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  source "$NVM_DIR/nvm.sh"
+  nvm install --lts
+  nvm alias default lts/*
+fi
 
 # pnpm
 npm install -g pnpm

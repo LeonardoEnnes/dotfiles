@@ -33,11 +33,16 @@ echo "Installing Docker..."
 sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 
+if command -v systemctl >/dev/null; then
+  sudo systemctl enable docker
+  sudo systemctl start docker
+fi
+
 # ─── SDKMAN + Java ─────────────────────────────────────────
 echo "Installing SDKMAN..."
 curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
-sdk install java 21-tem
+sdk install java 21-tem && sdk default java 21-tem
 
 # ─── NVM + Node ────────────────────────────────────────────
 echo "Installing NVM..."

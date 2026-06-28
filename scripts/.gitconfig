@@ -1,7 +1,7 @@
 [user]
-    name = 
-    email = 
-    signingkey = 
+    name = LeonardoEnnes
+    email = leonardoennes7@gmail.com
+    signingkey = true
 
 [commit]
     gpgsign = true

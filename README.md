@@ -80,3 +80,11 @@ Your GPG key is stored locally and won't transfer automatically. On your old mac
 gpg --export-secret-keys email > chave.gpg
 ```
 Then copy `chave.gpg` to the new machine and import it (step 6 above).
+
+## Recover shell
+
+If zsh breaks:
+
+```bash
+zsh -f
+source ~/.zshrc
