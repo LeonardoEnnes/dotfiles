@@ -43,6 +43,9 @@ NODE_MAJOR="${NODE_MAJOR:-24}"
 # Instala (ou atualiza) o patch mais recente do Java $JAVA_MAJOR e define como padrão
 install_java() {
   local id
+  # Garante que o SDKMAN atualize a lista de candidatos disponíveis numa máquina nova
+  sdk update </dev/null || true
+
   id="$(PAGER="cat" sdk list java \
         | { grep -oE "\b${JAVA_MAJOR}\.[0-9.]+-${JAVA_VENDOR}\b" || true; } \
         | sort -uV | tail -1)"
