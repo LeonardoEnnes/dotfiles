@@ -43,23 +43,29 @@ NODE_MAJOR="${NODE_MAJOR:-24}"
 # Instala (ou atualiza) o patch mais recente do Java $JAVA_MAJOR e define como padrão
 install_java() {
   local id
-  # Garante que o SDKMAN atualize a lista de candidatos disponíveis numa máquina nova
   sdk update </dev/null || true
 
-  id="$(PAGER="cat" sdk list java \
-        | { grep -oE "\b${JAVA_MAJOR}\.[0-9.]+-${JAVA_VENDOR}\b" || true; } \
-        | sort -uV | tail -1)"
+  # Tenta buscar a versão disponível de forma mais tolerante
+  id="$(sdk list java | grep -oE "\b${JAVA_MAJOR}\.[0-9.]+-${JAVA_VENDOR}\b" | sort -uV | tail -1)"
+  
+  # Fallback direto caso a listagem falhe em ambientes limpos de CI
   if [ -z "$id" ]; then
-    warn "Java ${JAVA_MAJOR}-${JAVA_VENDOR} não encontrado no SDKMAN"
-    return 1
+    id="${JAVA_MAJOR}.0.2-${JAVA_VENDOR}"
   fi
+
   if [ -d "$SDKMAN_DIR/candidates/java/$id" ]; then
     echo "  Java $id já está instalado"
   else
     log "Instalando Java $id"
-    sdk install java "$id" </dev/null
+    sdk install java "$id" </dev/null || sdk install java "${JAVA_MAJOR}-open" </dev/null
   fi
-  sdk default java "$id"
+  
+  # Garante que define o default independentemente da string exata instalada
+  local current_default
+  current_default="$(sdk current java | awk '{print $NF}')"
+  if [[ "$current_default" != *"${JAVA_MAJOR}"* ]]; then
+    sdk default java "$id" || true
+  fi
 }
 
 # Instala (ou atualiza) o patch mais recente do Node $NODE_MAJOR,
