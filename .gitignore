@@ -1,2 +1,14 @@
-# Dont share ur plugins 
-.zsh/plugins/
+*.gpg
+*.asc
+*.pem
+*.key
+.env
+.env.*
+ 
+# Configs locais de cada máquina
+*.local
+.gitconfig-work
+ 
+# Backups gerados pelo install.sh
+*.bak.*
+ 
