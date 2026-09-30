@@ -84,13 +84,6 @@ install_node() {
   nvm use default >/dev/null
 }
 
-# Carregadores de SDKMAN e NVM
-load_sdkman() {
-  export SDKMAN_DIR="$HOME/.sdkman"
-  # shellcheck disable=SC1091
-  source "$SDKMAN_DIR/bin/sdkman-init.sh"
-}
-
 load_nvm() {
   export NVM_DIR="$HOME/.nvm"
   # shellcheck disable=SC1091
