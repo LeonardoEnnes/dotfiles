@@ -40,32 +40,29 @@ JAVA_MAJOR="${JAVA_MAJOR:-21}"
 JAVA_VENDOR="${JAVA_VENDOR:-tem}"   # tem = Eclipse Temurin
 NODE_MAJOR="${NODE_MAJOR:-24}"
 
+# Carregadores de SDKMAN e NVM
+load_sdkman() {
+  export SDKMAN_DIR="$HOME/.sdkman"
+  # Força o SDKMAN a responder "yes" automaticamente em instalações não-interativas (CI)
+  if [ -f "$SDKMAN_DIR/etc/config" ]; then
+    sed -i 's/sdkman_auto_answer=false/sdkman_auto_answer=true/g' "$SDKMAN_DIR/etc/config"
+  fi
+  # shellcheck disable=SC1091
+  source "$SDKMAN_DIR/bin/sdkman-init.sh"
+}
+
 # Instala (ou atualiza) o patch mais recente do Java $JAVA_MAJOR e define como padrão
 install_java() {
-  local id
-  sdk update </dev/null || true
+  local version_id="${JAVA_MAJOR}.0.2-${JAVA_VENDOR}" # Ex: 21.0.2-tem
 
-  # Tenta buscar a versão disponível de forma mais tolerante
-  id="$(sdk list java | grep -oE "\b${JAVA_MAJOR}\.[0-9.]+-${JAVA_VENDOR}\b" | sort -uV | tail -1)"
-  
-  # Fallback direto caso a listagem falhe em ambientes limpos de CI
-  if [ -z "$id" ]; then
-    id="${JAVA_MAJOR}.0.2-${JAVA_VENDOR}"
-  fi
-
-  if [ -d "$SDKMAN_DIR/candidates/java/$id" ]; then
-    echo "  Java $id já está instalado"
+  if [ -d "$SDKMAN_DIR/candidates/java/$version_id" ]; then
+    echo "  Java $version_id já está instalado"
   else
-    log "Instalando Java $id"
-    sdk install java "$id" </dev/null || sdk install java "${JAVA_MAJOR}-open" </dev/null
+    log "Instalando Java $version_id"
+    sdk install java "$version_id" </dev/null || sdk install java "${JAVA_MAJOR}-open" </dev/null
   fi
   
-  # Garante que define o default independentemente da string exata instalada
-  local current_default
-  current_default="$(sdk current java | awk '{print $NF}')"
-  if [[ "$current_default" != *"${JAVA_MAJOR}"* ]]; then
-    sdk default java "$id" || true
-  fi
+  sdk default java "$version_id" || true
 }
 
 # Instala (ou atualiza) o patch mais recente do Node $NODE_MAJOR,
