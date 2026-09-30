@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint (shellcheck + zsh)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: shellcheck -x scripts/*.sh
+      - name: zsh syntax
+        run: |
+          sudo apt-get update -yqq && sudo apt-get install -yqq zsh
+          zsh -n scripts/.zshrc
+          zsh -n scripts/.p10k.zsh
+      - name: gitconfig válido
+        run: git config -f scripts/.gitconfig --list > /dev/null
+
+  install:
+    name: Instalação completa (idempotência)
+    runs-on: ubuntu-24.04
+    needs: lint
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: dotfiles
+      - name: Primeira execução
+        run: bash dotfiles/scripts/install.sh
+      - name: Segunda execução (não pode falhar)
+        run: bash dotfiles/scripts/install.sh
+      - name: Verificar ferramentas
+        shell: bash
+        run: |
+          source ~/.sdkman/bin/sdkman-init.sh
+          source ~/.nvm/nvm.sh
+          export PATH="$HOME/.local/bin:$PATH"
+          
+          echo "Validando ecossistema Java..."
+          java -version
+          mvn -v
+          
+          echo "Validando ecossistema Node..."
+          node -v
+          pnpm -v
+          
+          echo "Validando utilitários..."
+          docker compose version
+          yq --version
+          uv --version
+          
+          # Removido gh, terraform e aws pois não estão no install.sh atual
+          # Se lazygit voltar, adicione: lazygit --version
+          
+          echo "Validando links simbólicos..."
+          test -L ~/.zshrc
+          test -L ~/.gitconfig
