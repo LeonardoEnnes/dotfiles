@@ -52,4 +52,5 @@ if (( ${+commands[eza]} )); then
 fi
 
 # ─── Syntax highlighting: SEMPRE a última linha ────────────────────
-source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source "$HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+export PATH="$HOME/.local/bin:$PATH"
