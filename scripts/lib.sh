@@ -84,12 +84,28 @@ load_sdkman() {
 }
 
 install_java() {
-  # SDKMAN's latest identifier for a major/vendor is not stable across vendors.
-  # Prefer a resolvable major-vendor alias; fail visibly rather than silently switching vendor.
   local candidate="${JAVA_MAJOR}-${JAVA_VENDOR}"
+  local status=0
+  local had_nounset=false
+
   log "Instalando/selecionando Java $candidate"
-  sdk install java "$candidate" </dev/null
-  sdk default java "$candidate"
+
+  if [[ $- == *u* ]]; then
+    had_nounset=true
+    set +u
+  fi
+
+  sdk install java "$candidate" </dev/null || status=$?
+
+  if (( status == 0 )); then
+    sdk default java "$candidate" || status=$?
+  fi
+
+  if [[ "$had_nounset" == true ]]; then
+    set -u
+  fi
+
+  return "$status"
 }
 
 load_nvm() {
