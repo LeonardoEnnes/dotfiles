@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 # Atualiza componentes já instalados sem reinstalar o ambiente.
 set -euo pipefail
