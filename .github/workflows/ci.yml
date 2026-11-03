@@ -43,7 +43,7 @@ jobs:
       - name: Verificar ferramentas e links
         shell: bash
         run: |
-          set -euo pipefail
+          set -eo pipefail
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           source "$HOME/.nvm/nvm.sh"
           export PATH="$HOME/.local/bin:$PATH"
