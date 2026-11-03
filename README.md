@@ -2,175 +2,201 @@
 
 [![CI](https://github.com/LeonardoEnnes/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/LeonardoEnnes/dotfiles/actions/workflows/ci.yml)
 
-Meu ambiente de desenvolvimento no **WSL (Ubuntu)**, focado em **Java/Spring** e **React**.
-Uso principalmente para deixar um PC novo pronto com um único comando. Fique à vontade para usar e adaptar.
+Configurações e scripts para preparar meu ambiente de desenvolvimento em **Ubuntu 24.04 / WSL2**, com foco em **Java/Spring Boot**, **React/TypeScript** e ferramentas de terminal.
 
-## O que é instalado
+O objetivo é tornar o setup **reproduzível**, **modular** e **versionado**: instalar ferramentas, aplicar configurações por links simbólicos e verificar se o ambiente está pronto. Sinta-se à vontade para adaptar ao seu fluxo.
 
-| Categoria | Ferramentas |
-|---|---|
-| Shell | Zsh, Powerlevel10k, zsh-autosuggestions, zsh-syntax-highlighting, zsh-completions |
-| Java | SDKMAN, Java 21 (Eclipse Temurin), Maven |
-| Node | NVM, Node 24, pnpm |
+## Visão geral
+
+O repositório separa três responsabilidades:
+
+- **`scripts/`**: instala, atualiza e verifica ferramentas no Ubuntu/WSL.
+- **`config/`**: guarda configurações versionadas do shell, Git e ferramentas de IA.
+- **`windows/` e `wsl/`**: arquivos voltados ao Windows e à integração com WSL.
+
+O instalador principal carrega módulos independentes na sequência `base → shell → git → java → node → python → docker → ai → wsl`.
+
+## Ferramentas
+
+| Área | Ferramentas / finalidade |
+| --- | --- |
+| Shell | Zsh, Powerlevel10k e plugins de produtividade |
+| Java | SDKMAN, Java 21 (Eclipse Temurin) e Maven |
+| Node.js | NVM, Node 24 e pnpm |
 | Python | uv |
-| Containers | Docker Engine (repositório oficial) com Compose v2 e Buildx |
-| Banco de dados | postgresql-client |
-| Terminal | fzf, zoxide, eza, bat, ripgrep, direnv, git-delta, tldr |
-| Utilitários | jq, yq, htop, lsof, net-tools, build-essential |
+| Terminal | fzf, zoxide, eza, bat, ripgrep e outros utilitários |
+| Git | Configuração versionada e links simbólicos |
+| Containers | Configuração do Docker conforme o ambiente; no WSL, preferência pela integração com Docker Desktop |
+| IA | Módulo dedicado a ferramentas de IA; configurações em `config/opencode/` e `config/claude/` |
+
+> A lista exata de pacotes e o comportamento de cada instalação são definidos em `scripts/modules/`. Ter um arquivo em `config/` não garante, por si só, que ele esteja sendo aplicado pelo instalador.
 
 ## Estrutura
 
-```
+```text
 dotfiles/
-├── .github/workflows/ci.yml   # Lint + teste de instalação a cada push
-├── wsl/
-│   ├── .wslconfig             # Recursos da VM do WSL (copiar para C:\Users\<Você>\)
-│   └── wsl.conf               # systemd, interop e automount (vai para /etc/wsl.conf)
-└── scripts/
-    ├── install.sh             # Setup completo de uma máquina nova
-    ├── lib.sh                 # Funções usadas pelo install.sh e versões fixadas
-    ├── .zshrc
-    ├── .p10k.zsh
-    ├── .gitconfig
-    └── .gitignore_global
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── config/
+│   ├── claude/
+│   │   └── settings.json
+│   ├── git/
+│   │   └── .gitconfig
+│   ├── opencode/
+│   │   └── opencode.json
+│   └── zsh/
+│       ├── .zshrc
+│       └── .p10k.zsh
+├── scripts/
+│   ├── modules/
+│   │   ├── ai.sh
+│   │   ├── base.sh
+│   │   ├── docker.sh
+│   │   ├── git.sh
+│   │   ├── java.sh
+│   │   ├── node.sh
+│   │   ├── python.sh
+│   │   ├── shell.sh
+│   │   └── wsl.sh
+│   ├── doctor.sh
+│   ├── install.sh
+│   ├── lib.sh
+│   └── update.sh
+├── windows/
+│   ├── packages.json
+│   └── setup.ps1
+└── wsl/
+    └── .wslconfig
 ```
 
-## Setup de uma máquina nova
+## Instalação no Ubuntu / WSL
 
-**1. Pré-requisitos**
+### 1. Pré-requisitos
 
 ```bash
-sudo apt update && sudo apt install -y git zsh
+sudo apt update
+sudo apt install -y git curl
 ```
 
-**2. Clonar o repositório**
+### 2. Clonar o repositório
 
 ```bash
 git clone https://github.com/LeonardoEnnes/dotfiles.git ~/dotfiles
 ```
 
-**3. Rodar a instalação**
+### 3. Executar o instalador
 
 ```bash
 bash ~/dotfiles/scripts/install.sh
 ```
 
-O script cria symlinks de `.zshrc`, `.p10k.zsh`, `.gitconfig` e `.gitignore_global` na sua home. Se já existir um desses arquivos, ele faz um backup antes (`arquivo.bak.<data>`).
+O script utiliza módulos separados e foi projetado para permitir novas execuções. Quando a função de links simbólicos encontra um arquivo existente, cria um backup antes de substituí-lo; quando o link já está correto, não faz alterações.
 
-Ele pode ser executado mais de uma vez sem problemas: cada etapa verifica se já foi feita.
+### 4. Abrir uma nova sessão
 
-**4. Definir o zsh como shell padrão**
+Se necessário, defina o Zsh como shell padrão:
 
 ```bash
 chsh -s "$(command -v zsh)"
 ```
 
-**5. Configurar o WSL (no PowerShell)**
+Reabra o terminal para carregar as configurações.
 
-```powershell
-copy \\wsl$\Ubuntu\home\<seu-usuario>\dotfiles\wsl\.wslconfig $env:USERPROFILE
-wsl --shutdown
+### 5. Verificar o ambiente
+
+```bash
+bash ~/dotfiles/scripts/doctor.sh
 ```
 
-Ao abrir o terminal de novo, tudo já estará aplicado.
+## Versões de Java e Node.js
 
-## Versões
-
-Os majors do Java e do Node ficam fixos no topo de `scripts/lib.sh`:
+Os valores padrão ficam em `scripts/lib.sh`:
 
 ```bash
 JAVA_MAJOR="${JAVA_MAJOR:-21}"
-JAVA_VENDOR="${JAVA_VENDOR:-tem}"   # tem = Eclipse Temurin
+JAVA_VENDOR="${JAVA_VENDOR:-tem}"
 NODE_MAJOR="${NODE_MAJOR:-24}"
 ```
 
-O install sempre pega o patch mais recente dessas linhas (por exemplo, o último `21.0.x`). Antes de configurar um PC novo, confira se esses números ainda são os que você usa.
-
-Também dá para trocar só numa execução:
+É possível sobrescrevê-los em uma execução:
 
 ```bash
 JAVA_MAJOR=17 NODE_MAJOR=22 bash ~/dotfiles/scripts/install.sh
 ```
 
-Depois de instalado, trocar de versão é com as próprias ferramentas:
+O Java é gerenciado pelo SDKMAN e o Node.js pelo NVM. Consulte a documentação dessas ferramentas antes de alterar versões em projetos existentes.
+
+## Atualização
+
+O repositório inclui um script dedicado:
 
 ```bash
-sdk install java 25-tem && sdk default java 25-tem
-nvm install 22 && nvm alias default 22
+bash ~/dotfiles/scripts/update.sh
 ```
 
-Para um projeto que precisa de outra versão do Java, crie um `.sdkmanrc` na raiz dele com `sdk env init`.
-
-## Mantendo atualizado
-
-Não há script de update. Use os comandos das próprias ferramentas:
+O que é atualizado depende da implementação atual de `update.sh`. Para verificar o estado do ambiente após uma atualização:
 
 ```bash
-sudo apt update && sudo apt upgrade -y               # sistema, Docker, delta, eza...
-sdk upgrade maven                                    # Maven
-sdk install java <21.0.x-tem>                        # novo patch do Java (veja com: sdk list java)
-nvm install 24 --reinstall-packages-from=current     # novo patch do Node
-uv self update                                       # uv
-git -C ~/.zsh/plugins/powerlevel10k pull             # repita para cada plugin em ~/.zsh/plugins
+bash ~/dotfiles/scripts/doctor.sh
 ```
 
-## Atalhos úteis
+## Configurações e dados privados
 
-| Atalho | Faz |
-|---|---|
-| `Ctrl+R` | Busca fuzzy no histórico |
-| `Ctrl+T` | Busca fuzzy de arquivos |
-| `Alt+C` | Busca fuzzy de pastas e entra nela |
-| `z <pasta>` | Pula para uma pasta já visitada (zoxide) |
-| `mvr` | `./mvnw spring-boot:run` |
-| `ls` / `ll` | Listagem com eza (com ícones) |
-| `git lg` | Log em grafo |
-| `git co` / `git br` | `checkout` / `branch` |
+As configurações versionadas ficam em `config/`. Arquivos pessoais, credenciais, tokens, chaves privadas e sessões de autenticação **não devem ser enviados ao GitHub**.
 
-> Os ícones do `eza` precisam de uma [Nerd Font](https://www.nerdfonts.com/) configurada no Windows Terminal (ex: MesloLGS NF). Sem ela, aparecem quadradinhos; nesse caso, remova o `--icons` dos aliases no `.zshrc`.
+Para o Git, a configuração compartilhada pode incluir um arquivo local não versionado, como `~/.gitconfig.local`, para nome, email e chave de assinatura SSH. A chave privada SSH deve permanecer em `~/.ssh/` e nunca ser adicionada ao repositório.
 
-## Detalhes do WSL
+Os diretórios `config/opencode/` e `config/claude/` são destinados a configurações reutilizáveis das ferramentas de IA. Confirme em `scripts/modules/ai.sh` quais arquivos são efetivamente instalados ou vinculados.
 
-- **`wsl.conf`** habilita o systemd (necessário para o Docker) e desativa o `appendWindowsPath`, o que deixa o zsh bem mais rápido. Como o PATH do Windows deixa de ser herdado, o install cria um atalho para o VS Code em `~/.local/bin/code`, então `code .` continua funcionando.
-- **`.wslconfig`** limita a VM a 8 GB de RAM, 4 processadores e 2 GB de swap. Ajuste conforme a sua máquina.
+## Windows e WSL
 
-## Chave GPG em uma máquina nova
+O ambiente é dividido em duas camadas:
 
-Os commits são assinados com GPG (`commit.gpgsign = true`). A chave não vem junto com o repositório.
+- **Windows**: sistema host, aplicativos gráficos e Docker Desktop.
+- **Ubuntu no WSL2**: shell, linguagens, gerenciadores de versões, ferramentas de terminal e projetos.
 
-Na máquina antiga, exporte para **fora** da pasta do repositório:
+`windows/setup.ps1` e `windows/packages.json` são os pontos de entrada para a automação do Windows. Verifique seu conteúdo antes de executá-los; o instalador Bash não substitui a configuração do host.
 
-```bash
-gpg --export-secret-keys --armor <seu-email> > ~/chave.asc
+### Configuração da VM do WSL
+
+O arquivo `wsl/.wslconfig` é uma configuração do **Windows**, não do diretório `/etc/` do Ubuntu. No PowerShell, copie-o para o perfil do usuário:
+
+```powershell
+Copy-Item "\\wsl$\Ubuntu\home\<usuario>\dotfiles\wsl\.wslconfig" "$env:USERPROFILE\.wslconfig"
+wsl --shutdown
 ```
 
-Na máquina nova:
+Substitua `Ubuntu` pelo nome da distribuição e `<usuario>` pelo usuário Linux. Revise os limites de memória, CPU e swap do arquivo conforme o hardware.
 
-```bash
-gpg --import ~/chave.asc
-shred -u ~/chave.asc   # apaga o arquivo com segurança depois de importar
-```
+### Docker
 
-Depois, pegue o ID da chave e coloque em `signingkey` no `.gitconfig`:
-
-```bash
-gpg --list-secret-keys --keyid-format=long
-# sec   ed25519/ABCD1234EF567890 ...   ← o ID é a parte depois da barra
-```
+No WSL2 com Docker Desktop, prefira habilitar a integração da distribuição no Docker Desktop, evitando manter um Docker Engine separado no Ubuntu sem necessidade. A CI executada no GitHub Actions usa Ubuntu hospedado pelo GitHub e não valida a integração real com Docker Desktop no Windows.
 
 ## CI
 
-A cada push, o GitHub Actions:
+O workflow `.github/workflows/ci.yml` é executado em pushes, pull requests e manualmente. Ele possui dois jobs:
 
-1. Roda o `shellcheck` nos scripts e valida a sintaxe do `.zshrc`, do `.p10k.zsh` e do `.gitconfig`.
-2. Executa o `install.sh` **duas vezes** num Ubuntu 24.04 limpo, garantindo que ele funciona do zero e que rodar de novo não quebra nada.
-3. Confere se Java, Maven, Node, pnpm, Docker Compose, yq e uv ficaram disponíveis e se os symlinks foram criados.
+1. **Lint**: ShellCheck, validação de sintaxe Bash/Zsh e leitura do arquivo de configuração Git.
+2. **Instalação repetível**: executa `install.sh` duas vezes em Ubuntu 24.04 e verifica Java, Maven, Node, pnpm, yq, uv, links simbólicos e `doctor.sh`.
 
-## Recuperar o shell
+Isso ajuda a detectar erros e regressões, mas não substitui testes específicos do Windows/WSL.
 
-Se o zsh quebrar depois de alguma alteração:
+## Recuperação e diagnóstico
+
+Se o Zsh apresentar problemas:
 
 ```bash
-zsh -f            # abre o zsh sem carregar nenhuma config
-source ~/.zshrc   # recarrega e mostra onde está o erro
+zsh -f
 ```
+
+Esse comando abre o Zsh sem carregar os arquivos usuais de inicialização, permitindo investigar a configuração. Para verificar os scripts:
+
+```bash
+shellcheck -x scripts/*.sh scripts/modules/*.sh
+bash -n scripts/*.sh scripts/modules/*.sh
+```
+
+## Licença e uso
+
+Configurações pessoais disponibilizadas como referência. Revise os scripts antes de executá-los e adapte versões, aplicativos e preferências ao seu ambiente.
