@@ -39,7 +39,8 @@ link() {
 
   # Preserva arquivos existentes.
   elif [[ -e "$dest" ]]; then
-    local backup="${dest}.bak.$(date +%Y%m%d%H%M%S)"
+    local backup
+    backup="${dest}.bak.$(date +%Y%m%d%H%M%S)"
     mv -- "$dest" "$backup"
     warn "Backup criado: $backup"
   fi
