@@ -17,6 +17,8 @@ shell_install() {
   clone_zsh_plugin zsh-users/zsh-autosuggestions zsh-autosuggestions
   clone_zsh_plugin zsh-users/zsh-syntax-highlighting zsh-syntax-highlighting
   clone_zsh_plugin zsh-users/zsh-completions zsh-completions
-  link "$DOTFILES_DIR/scripts/.zshrc" "$HOME/.zshrc"
-  link "$DOTFILES_DIR/scripts/.p10k.zsh" "$HOME/.p10k.zsh"
+  link "$DOTFILES_DIR/config/zsh/.zshrc" \
+     "$HOME/.zshrc"
+  link "$DOTFILES_DIR/config/zsh/.p10k.zsh" \
+      "$HOME/.p10k.zsh"
 }
