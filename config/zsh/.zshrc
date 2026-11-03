@@ -54,3 +54,6 @@ fi
 # ─── Syntax highlighting: SEMPRE a última linha ────────────────────
 source "$HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 export PATH="$HOME/.local/bin:$PATH"
+
+# opencode
+export PATH=/home/leo/.opencode/bin:$PATH
