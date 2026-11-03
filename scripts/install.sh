@@ -8,7 +8,7 @@ export DOTFILES_DIR
 # shellcheck source=scripts/lib.sh
 source "$DOTFILES_DIR/scripts/lib.sh"
 
-for module in base shell git java node python docker ai wsl; do
+for module in base shell git java node python docker openspec wsl; do
   # shellcheck disable=SC1090
   source "$DOTFILES_DIR/scripts/modules/${module}.sh"
 done
@@ -20,6 +20,7 @@ java_install
 node_install
 python_install
 docker_install
+openspec_install
 wsl_install
 
 if [[ "$(basename "${SHELL:-/bin/bash}")" != zsh ]]; then

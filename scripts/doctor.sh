@@ -26,7 +26,7 @@ check_link() {
 }
 
 log 'Diagnóstico do ambiente'
-for cmd in git zsh curl java mvn node npm pnpm uv yq; do
+for cmd in git zsh curl java mvn node npm pnpm uv yq openspec; do
   check_cmd "$cmd" "$cmd"
 done
 check_link "$HOME/.zshrc"

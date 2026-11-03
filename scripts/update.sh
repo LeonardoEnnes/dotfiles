@@ -46,6 +46,19 @@ else
   warn 'NVM ausente; pulando Node/pnpm'
 fi
 
+# OpenSpec
+if has openspec; then
+  if has npm && npm list -g @fission-ai/openspec --depth=0 \
+      >/dev/null 2>&1; then
+    log 'Atualizando OpenSpec'
+    npm install -g @fission-ai/openspec@latest
+  else
+    warn 'OpenSpec não gerenciado pelo npm; atualização ignorada'
+  fi
+else
+  warn 'OpenSpec ausente; execute install.sh'
+fi
+
 # Python
 if has uv; then
   log 'Atualizando uv'
