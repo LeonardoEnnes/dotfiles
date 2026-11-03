@@ -61,10 +61,26 @@ install_yq() {
 }
 
 load_sdkman() {
-  export SDKMAN_DIR="$HOME/.sdkman"
-  [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] || { warn 'SDKMAN não instalado'; return 1; }
+  export SDKMAN_DIR="${SDKMAN_DIR:-$HOME/.sdkman}"
+
+  if [[ ! -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]]; then
+    fail "SDKMAN não instalado"
+    return 1
+  fi
+
+  local restore_nounset=false
+
+  if [[ $- == *u* ]]; then
+    restore_nounset=true
+    set +u
+  fi
+
   # shellcheck source=/dev/null
   source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+  if [[ "$restore_nounset" == true ]]; then
+    set -u
+  fi
 }
 
 install_java() {
