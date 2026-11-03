@@ -12,16 +12,40 @@ JAVA_VENDOR="${JAVA_VENDOR:-tem}"
 NODE_MAJOR="${NODE_MAJOR:-24}"
 
 link() {
-  local src="$1" dest="$2"
-  [[ -e "$src" ]] || { warn "Arquivo ausente: $src"; return 1; }
-  mkdir -p "$(dirname "$dest")"
-  if [[ -L "$dest" && ! -e "$dest" ]]; then
-    rm -- "$dest"
-  elif [[ -e "$dest" && ! -L "$dest" ]]; then
-    mv -- "$dest" "${dest}.bak.$(date +%Y%m%d%H%M%S)"
-    warn "Backup criado: $dest"
+  if (( $# != 2 )); then
+    fail "link(): esperado 2 argumentos (origem e destino), recebidos $#"
+    return 1
   fi
-  ln -sfn -- "$src" "$dest"
+
+  local src="$1"
+  local dest="$2"
+
+  [[ -e "$src" ]] || {
+    fail "Arquivo de origem não encontrado: $src"
+    return 1
+  }
+
+  mkdir -p "$(dirname "$dest")"
+
+  # Se o symlink já está correto, não faz nada.
+  if [[ -L "$dest" ]] &&
+     [[ "$(readlink -f -- "$dest")" == "$(realpath -- "$src")" ]]; then
+    return 0
+  fi
+
+  # Remove symlinks antigos ou quebrados.
+  if [[ -L "$dest" ]]; then
+    rm -- "$dest"
+
+  # Preserva arquivos existentes.
+  elif [[ -e "$dest" ]]; then
+    local backup="${dest}.bak.$(date +%Y%m%d%H%M%S)"
+    mv -- "$dest" "$backup"
+    warn "Backup criado: $backup"
+  fi
+
+  ln -s -- "$src" "$dest"
+  log "Symlink criado: $dest -> $src"
 }
 
 install_yq() {
