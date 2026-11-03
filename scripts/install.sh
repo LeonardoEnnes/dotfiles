@@ -24,6 +24,6 @@ ai_install
 wsl_install
 
 if [[ "$(basename "${SHELL:-/bin/bash}")" != zsh ]]; then
-  warn 'Seu shell padrão não é zsh. Rode: chsh -s "$(command -v zsh)"'
+  warn "Seu shell padrão não é zsh. Rode: chsh -s \"$(command -v zsh)\""
 fi
 log 'Pronto! Reinicie o terminal (ou o WSL) para aplicar tudo.'
