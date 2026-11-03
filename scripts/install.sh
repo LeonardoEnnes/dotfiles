@@ -20,7 +20,6 @@ java_install
 node_install
 python_install
 docker_install
-ai_install
 wsl_install
 
 if [[ "$(basename "${SHELL:-/bin/bash}")" != zsh ]]; then
