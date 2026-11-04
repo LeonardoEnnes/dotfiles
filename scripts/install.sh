@@ -33,7 +33,7 @@ source "$ENV_FILE"
 set +a
 # --------------------------------------------
 
-for module in base shell git java node python docker openspec wsl; do
+for module in base shell java node python docker openspec wsl; do
   # shellcheck disable=SC1090
   source "$DOTFILES_DIR/scripts/modules/${module}.sh"
 done
