@@ -14,14 +14,18 @@ ENV_EXAMPLE="$DOTFILES_DIR/.env.example"
 
 if [[ ! -f "$ENV_FILE" ]]; then
     if [[ -f "$ENV_EXAMPLE" ]]; then
-        warn "Arquivo .env não encontrado. Criando um a partir do .env.example..."
-        cp "$ENV_EXAMPLE" "$ENV_FILE"
-        fail "Por favor, edite o arquivo '$ENV_FILE' com seus dados reais (Git user/email) e execute o instalador novamente."
+        if [[ "${CI:-false}" == "true" ]]; then
+            warn "Ambiente de CI detectado. Copiando .env.example para .env automaticamente..."
+            cp "$ENV_EXAMPLE" "$ENV_FILE"
+        else
+            warn "Arquivo .env não encontrado. Criando um a partir do .env.example..."
+            cp "$ENV_EXAMPLE" "$ENV_FILE"
+            fail "Por favor, edite o arquivo '$ENV_FILE' com seus dados reais e execute o instalador novamente."
+        fi
     else
         fail "Nem .env nem .env.example foram encontrados!"
     fi
 fi
-
 # Carrega as variáveis do .env de forma segura
 set -a
 # shellcheck source=/dev/null
