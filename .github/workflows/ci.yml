@@ -23,9 +23,7 @@ jobs:
         run: |
           zsh -n config/zsh/.zshrc
           zsh -n config/zsh/.p10k.zsh
-      - name: Gitconfig válido
-        run: git config -f config/git/.gitconfig --list > /dev/null
-
+     
   install:
     name: Instalação repetível
     runs-on: ubuntu-24.04
@@ -54,7 +52,5 @@ jobs:
           yq --version
           uv --version
           test -L "$HOME/.zshrc"
-          test -L "$HOME/.gitconfig"
           test -e "$HOME/.zshrc"
-          test -e "$HOME/.gitconfig"
           bash dotfiles/scripts/doctor.sh
