@@ -14,6 +14,7 @@ wsl_install() {
     fail "Template do wsl.conf não encontrado em: $template_file"
     return 1
   }
+  fi
 
   # Valores padrão caso o usuário esqueça de preencher no .env
   local wsl_host="${WSL_ENV_NAME:-ubuntu-dev}"
