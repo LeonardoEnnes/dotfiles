@@ -1,7 +1,7 @@
 # Dotfiles
 
 [![CI](https://github.com/LeonardoEnnes/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/LeonardoEnnes/dotfiles/actions/workflows/ci.yml)
-
+.
 Configurações e scripts para preparar meu ambiente de desenvolvimento em **Ubuntu 24.04 / WSL2**, com foco em **Java/Spring Boot**, **React/TypeScript** e ferramentas de terminal.
 
 O objetivo é tornar o setup **reproduzível**, **modular** e **versionado**: instalar ferramentas, aplicar configurações por links simbólicos e verificar se o ambiente está pronto, isolando dados sensíveis e específicos da máquina em um arquivo `.env`.
