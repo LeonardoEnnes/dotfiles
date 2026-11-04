@@ -8,6 +8,27 @@ export DOTFILES_DIR
 # shellcheck source=scripts/lib.sh
 source "$DOTFILES_DIR/scripts/lib.sh"
 
+# --- Gerenciamento de Configuração (.env) ---
+ENV_FILE="$DOTFILES_DIR/.env"
+ENV_EXAMPLE="$DOTFILES_DIR/.env.example"
+
+if [[ ! -f "$ENV_FILE" ]]; then
+    if [[ -f "$ENV_EXAMPLE" ]]; then
+        warn "Arquivo .env não encontrado. Criando um a partir do .env.example..."
+        cp "$ENV_EXAMPLE" "$ENV_FILE"
+        fail "Por favor, edite o arquivo '$ENV_FILE' com seus dados reais (Git user/email) e execute o instalador novamente."
+    else
+        fail "Nem .env nem .env.example foram encontrados!"
+    fi
+fi
+
+# Carrega as variáveis do .env de forma segura
+set -a
+# shellcheck source=/dev/null
+source "$ENV_FILE"
+set +a
+# --------------------------------------------
+
 for module in base shell git java node python docker openspec wsl; do
   # shellcheck disable=SC1090
   source "$DOTFILES_DIR/scripts/modules/${module}.sh"

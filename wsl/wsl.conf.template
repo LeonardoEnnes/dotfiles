@@ -2,10 +2,10 @@
 systemd=true
 
 [user]
-default=leo
+default=${WSL_DEFAULT_USER}
 
 [network]
-hostname=ennes
+hostname=${WSL_ENV_NAME}
 generateHosts=true
 
 [interop]

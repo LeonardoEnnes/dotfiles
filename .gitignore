@@ -3,8 +3,8 @@
 *.pem
 *.key
 .env
-.env.*
- 
+ wsl.conf
+
 # Configs locais de cada máquina
 *.local
 .gitconfig-work
