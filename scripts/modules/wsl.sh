@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/env bash
 
 wsl_install() {
   if ! is_wsl; then
@@ -13,7 +13,6 @@ wsl_install() {
   if [[ ! -f "$template_file" ]]; then
     fail "Template do wsl.conf não encontrado em: $template_file"
     return 1
-  }
   fi
 
   # Valores padrão caso o usuário esqueça de preencher no .env
@@ -35,7 +34,7 @@ wsl_install() {
 
   log "Arquivo /etc/wsl.conf aplicado com sucesso (Usuário: $wsl_user | Hostname: $wsl_host)"
 
-  # Configuração do atalho do VS Code (mantendo sua lógica atual)
+  # Configuração do atalho do VS Code
   local candidate
   for candidate in /mnt/c/Users/*/AppData/Local/Programs/"Microsoft VS Code"/bin/code \
     "/mnt/c/Program Files/Microsoft VS Code/bin/code"; do
