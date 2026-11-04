@@ -22,6 +22,7 @@ O instalador principal carrega módulos independentes na sequência:
 
 ## Ferramentas
 
+
 | Área | Ferramentas / finalidade |
 | --- | --- |
 | Shell | Zsh, Powerlevel10k e plugins de produtividade |
