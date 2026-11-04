@@ -30,7 +30,6 @@ O instalador principal carrega módulos independentes na sequência:
 | Node.js | NVM, Node 24 e pnpm |
 | Python | uv |
 | Terminal | fzf, zoxide, eza, bat, ripgrep e outros utilitários |
-| Git | Configuração base versionada com injeção dinâmica de usuário via `.env` |
 | Containers | Configuração do Docker conforme o ambiente; no WSL, preferência pela integração com Docker Desktop |
 | IA | Módulo dedicado a ferramentas de IA |
 
@@ -91,14 +90,14 @@ cd ~/dotfiles
 
 ### 3. Configurar variáveis de ambiente (Obrigatório)
 
-Antes de instalar, crie seu arquivo local de configuração para injetar seus dados no Git e no WSL sem expô-los no repositório:
+Antes de instalar, crie seu arquivo local de configuração para injetar seus dados no WSL sem expô-los no repositório:
 
 ```bash
 cp .env.example .env
 nano .env # Ou use o editor de sua preferência
 ```
 
-Preencha as variáveis com seus dados reais (`GIT_USER_NAME`, `GIT_USER_EMAIL`, `WSL_ENV_NAME`, etc.).
+Preencha as variáveis com seus dados reais
 
 O arquivo `.env` é ignorado pelo Git.
 
@@ -147,14 +146,6 @@ JAVA_MAJOR=17 NODE_MAJOR=22 bash ~/dotfiles/scripts/install.sh
 O Java é gerenciado pelo SDKMAN e o Node.js pelo NVM.
 
 Consulte a documentação dessas ferramentas antes de alterar versões em projetos existentes.
-
-## Configurações e dados privados
-
-A arquitetura do repositório foi projetada para evitar que dados pessoais sejam commitados:
-
-- **Git & Hostname**: Nome, e-mail do Git e hostname do WSL são gerenciados exclusivamente pelo `.env` local.
-- **Chaves SSH**: A chave privada SSH deve permanecer em `~/.ssh/` e **nunca** ser adicionada ao repositório. O `.gitconfig` pode referenciar sua chave pública, mas o gerenciamento do arquivo em si é externo ao Git.
-- **Ferramentas Proprietárias**: Aliases ou CLIs específicos de empresas/projetos devem ficar em arquivos `.local` (ex.: `~/.zshrc.local`) que são lidos pelo shell principal, mas não versionados.
 
 ## Windows e WSL
 
