@@ -26,11 +26,10 @@ check_link() {
 }
 
 log 'Diagnóstico do ambiente'
-for cmd in git zsh curl java mvn node npm pnpm uv yq openspec; do
+for cmd in zsh curl java mvn node npm pnpm uv yq openspec; do
   check_cmd "$cmd" "$cmd"
 done
 check_link "$HOME/.zshrc"
-check_link "$HOME/.gitconfig"
 if is_wsl; then
   printf 'INFO WSL               detectado\n'
   [[ -r /etc/wsl.conf ]] && printf 'INFO WSL config        /etc/wsl.conf presente\n'
