@@ -1,13 +1,8 @@
-[user]
-    name = ${GIT_USER_NAME}
-    email = ${GIT_USER_EMAIL}
-    signingkey = ~/.ssh/id_ed25519.pub
-
 [commit]
-	gpgsign = true
+    gpgsign = true
 
 [gpg]
-	format = ssh
+    format = ssh
 
 [core]
     autocrlf = input
