@@ -38,9 +38,7 @@ O fluxo principal parte de `scripts/install.sh`, que carrega a biblioteca compar
 dotfiles/
 ├── .github/workflows/ci.yml
 ├── config/
-│   ├── claude/settings.json
 │   ├── git/.gitconfig
-│   ├── opencode/opencode.json
 │   └── zsh/
 │       ├── .zshrc
 │       └── .p10k.zsh
@@ -50,7 +48,6 @@ dotfiles/
 │   ├── doctor.sh
 │   ├── lib.sh
 │   └── modules/
-│       ├── ai.sh
 │       ├── base.sh
 │       ├── docker.sh
 │       ├── git.sh
@@ -81,7 +78,6 @@ Esta árvore representa os caminhos compartilhados na conversa. Confirme a exist
 | `scripts/modules/node.sh` | NVM, Node.js e ferramentas associadas. |
 | `scripts/modules/python.sh` | Ferramentas do ecossistema Python. |
 | `scripts/modules/docker.sh` | Configuração/validação de Docker conforme o ambiente. |
-| `scripts/modules/ai.sh` | Integração das ferramentas de IA; implementação precisa ser revisada. |
 | `scripts/modules/wsl.sh` | Ajustes específicos de WSL; implementação precisa ser revisada. |
 | `scripts/update.sh` | Ponto de entrada de manutenção; operações exatas dependem do conteúdo do script. |
 | `scripts/doctor.sh` | Diagnóstico do ambiente; verificações exatas dependem do conteúdo do script. |
@@ -107,8 +103,6 @@ node_install
 python_install
   ↓
 docker_install
-  ↓
-ai_install
   ↓
 wsl_install
 ```
@@ -182,26 +176,7 @@ flowchart LR
 - `/etc/wsl.conf`, quando gerenciado, configura opções da distribuição Linux. **Não é o mesmo arquivo que `.wslconfig`.**
 - Quando Docker Desktop fornece o daemon via integração WSL, não é necessário instalar outro Docker Engine dentro da distribuição. O módulo Docker deve tratar explicitamente a diferença entre WSL e Ubuntu nativo.
 
-## 8. OpenCode e Claude Code
-
-Os caminhos de configuração presentes na estrutura são:
-
-```text
-config/opencode/opencode.json
-config/claude/settings.json
-```
-
-A integração completa exige conferir, para cada ferramenta:
-
-1. Instalação e atualização da CLI.
-2. Caminho de configuração efetivamente utilizado pela versão instalada.
-3. Criação de symlink ou cópia controlada.
-4. Separação entre preferências versionáveis e autenticação local.
-5. Diagnóstico no `doctor.sh` e testes adequados na CI.
-
-**Estado:** a existência desses arquivos foi identificada; a instalação e o vínculo automático ainda precisam ser validados contra `scripts/modules/ai.sh`. Não versionar tokens, sessões ou credenciais.
-
-## 9. Git e segurança
+## 8. Git e segurança
 
 A configuração global pode ser versionada em `config/git/.gitconfig`, enquanto dados pessoais ou dependentes da máquina podem ficar em `~/.gitconfig.local` e ser incluídos pela configuração principal.
 
@@ -257,38 +232,3 @@ for f in scripts/*.sh scripts/modules/*.sh; do bash -n "$f"; done
 ```
 
 Mudanças de comportamento devem ser implementadas no módulo responsável, testadas localmente e validadas pela CI. Evite duplicar comandos de instalação em `install.sh`, `update.sh` e scripts Windows sem uma razão explícita.
-
-## 12. Próximos passos
-
-### Integração de IA
-
-- [ ] Revisar `ai.sh` e os dois arquivos de configuração.
-- [ ] Confirmar caminhos e formato das configurações nas versões instaladas.
-- [ ] Garantir instalação e symlinks repetíveis.
-- [ ] Manter credenciais fora do Git.
-- [ ] Ampliar o diagnóstico sem exigir login na CI.
-
-### Automação Windows
-
-- [ ] Revisar `setup.ps1` e `packages.json`.
-- [ ] Definir lista mínima de aplicativos Windows.
-- [ ] Implementar checagem de pré-requisitos, instalação e reexecução segura.
-- [ ] Documentar a aplicação de `.wslconfig` e reinicialização do WSL.
-- [ ] Considerar validação PowerShell e JSON em CI separada.
-
-### Qualidade
-
-- [ ] Revisar o comportamento exato de `update.sh` e `doctor.sh`.
-- [ ] Adicionar testes específicos para helpers críticos.
-- [ ] Considerar testes de integração WSL/Windows fora do runner Ubuntu.
-- [ ] Manter README e este documento sincronizados com a implementação.
-
-## 13. Princípios de projeto
-
-1. **Modularidade:** cada ecossistema tem um módulo responsável.
-2. **Repetibilidade:** executar novamente não deve destruir o ambiente.
-3. **Configuração versionada:** preferências compartilháveis ficam no Git.
-4. **Segredos locais:** credenciais e chaves privadas nunca são commitadas.
-5. **Separação de ambientes:** Windows host, WSL e Ubuntu de CI têm responsabilidades distintas.
-6. **Falhas visíveis:** erros devem interromper a instalação e ser diagnosticáveis.
-7. **Documentação fiel:** distinguir comportamento implementado de funcionalidades planejadas.

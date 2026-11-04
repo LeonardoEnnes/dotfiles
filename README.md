@@ -39,18 +39,13 @@ dotfiles/
 │   └── workflows/
 │       └── ci.yml
 ├── config/
-│   ├── claude/
-│   │   └── settings.json
 │   ├── git/
 │   │   └── .gitconfig
-│   ├── opencode/
-│   │   └── opencode.json
 │   └── zsh/
 │       ├── .zshrc
 │       └── .p10k.zsh
 ├── scripts/
 │   ├── modules/
-│   │   ├── ai.sh
 │   │   ├── base.sh
 │   │   ├── docker.sh
 │   │   ├── git.sh
