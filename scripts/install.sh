@@ -36,7 +36,6 @@ done
 
 base_install
 shell_install
-git_install
 java_install
 node_install
 python_install
