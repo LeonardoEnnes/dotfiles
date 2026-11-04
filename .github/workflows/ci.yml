@@ -32,12 +32,12 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          path: dotfiles
       - name: Primeira execução
-        run: bash dotfiles/scripts/install.sh
+        run: bash scripts/install.sh
+
       - name: Segunda execução
-        run: bash dotfiles/scripts/install.sh
+        run: bash scripts/install.sh
+
       - name: Verificar ferramentas e links
         shell: bash
         run: |
@@ -53,4 +53,4 @@ jobs:
           uv --version
           test -L "$HOME/.zshrc"
           test -e "$HOME/.zshrc"
-          bash dotfiles/scripts/doctor.sh
+          bash scripts/doctor.sh
