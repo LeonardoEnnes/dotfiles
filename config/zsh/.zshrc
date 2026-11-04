@@ -22,7 +22,7 @@ setopt HIST_IGNORE_SPACE    # comando com espaço na frente não é salvo
 fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
 autoload -Uz compinit && compinit
 
-# ─── Tema e plugins ────────────────────────────────────────────────
+# ─── Tema e plugins ────────────────────────────────________________
 source ~/.zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -51,9 +51,10 @@ if (( ${+commands[eza]} )); then
   alias ll="eza -la --icons"
 fi
 
-# ─── Syntax highlighting: SEMPRE a última linha ────────────────────
+# ─── Syntax highlighting: SEMPRE antes das extensões locais ─────────
 source "$HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-export PATH="$HOME/.local/bin:$PATH"
 
-# opencode
-export PATH=/home/leo/.opencode/bin:$PATH
+# ─── Configurações Locais e Específicas da Máquina ────────────────
+if [[ -f "$HOME/.zshrc.local" ]]; then
+    source "$HOME/.zshrc.local"
+fi
